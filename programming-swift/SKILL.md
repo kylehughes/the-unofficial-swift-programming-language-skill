@@ -1,11 +1,11 @@
 ---
 name: programming-swift
-description: Provides the complete content of 'The Swift Programming Language (6.2.1)' book by Apple. Use this skill when you need to verify Swift syntax, look up language features, understand concurrency, resolve compiler errors, or consult the formal language reference.
+description: Provides the complete content of 'The Swift Programming Language (6.2.3)' book by Apple. Use this skill when you need to verify Swift syntax, look up language features, understand concurrency, resolve compiler errors, or consult the formal language reference.
 ---
 
 # The Swift Programming Language
 
-The entire content of The Swift Programming Language (6.2.1) book by Apple. This is a comprehensive language reference and guide to the Swift programming language.
+The entire content of The Swift Programming Language (6.2.3) book by Apple. This is a comprehensive language reference and guide to the Swift programming language.
 
 ## Documentation Structure
 
