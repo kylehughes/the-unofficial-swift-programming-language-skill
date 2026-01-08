@@ -58,7 +58,6 @@ The entire content of The Swift Programming Language (6.2.3) book by Apple. This
 - **Attributes** ([ReferenceManual/Attributes.md](ReferenceManual/Attributes.md)): Add information to declarations and types.
 - **Patterns** ([ReferenceManual/Patterns.md](ReferenceManual/Patterns.md)): Match and destructure values.
 - **Generic Parameters and Arguments** ([ReferenceManual/GenericParametersAndArguments.md](ReferenceManual/GenericParametersAndArguments.md)): Generalize declarations to abstract away concrete types.
-- **Summary of the Grammar** ([ReferenceManual/SummaryOfTheGrammar.md](ReferenceManual/SummaryOfTheGrammar.md)): Read the whole formal grammar.
 
 ## Usage Notes
 
