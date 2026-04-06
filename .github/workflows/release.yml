@@ -45,15 +45,22 @@ jobs:
           echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
           echo "human_date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
 
+      - name: Derive tag-safe version
+        if: steps.check_changes.outputs.changes == 'true'
+        id: version
+        run: |
+          # Replace spaces with hyphens so the version is valid in Git tags
+          # e.g. "6.3 beta" → "6.3-beta", "6.2.3" → "6.2.3" (no-op)
+          TAG_SAFE="${{ steps.package.outputs.swift_version }}"
+          TAG_SAFE="${TAG_SAFE// /-}"
+          echo "tag_safe=${TAG_SAFE}.${{ steps.date.outputs.date }}" >> $GITHUB_OUTPUT
+
       - name: Update Claude plugin marketplace metadata
         if: steps.check_changes.outputs.changes == 'true'
         run: |
           # Update the version in marketplace.json to match the extracted Swift version + Date
-          # Format: SWIFT_VER.YYYYMMDD (e.g. 6.2.1.20251121)
-          VERSION="${{ steps.package.outputs.swift_version }}.${{ steps.date.outputs.date }}"
-          SWIFT_VER="${{ steps.package.outputs.swift_version }}"
-          
-          jq --arg v "$VERSION" \
+          # Format: SWIFT_VER.YYYYMMDD (e.g. 6.2.3.20251121, 6.3-beta.20260325)
+          jq --arg v "${{ steps.version.outputs.tag_safe }}" \
             '.plugins[0].version = $v' \
             .claude-plugin/marketplace.json > temp.json && mv temp.json .claude-plugin/marketplace.json
 
@@ -62,15 +69,14 @@ jobs:
         run: |
           git config --global user.name "Kyle Hughes"
           git config --global user.email "me@kylehugh.es"
-          
+
           # Note: programming-swift is already staged from the check_changes step
-          
+
           # Stage the updated marketplace metadata
           git add .claude-plugin/marketplace.json
-          
-          VERSION="${{ steps.package.outputs.swift_version }}.${{ steps.date.outputs.date }}"
-          git commit -m "Update Skill content and Claude plugin marketplace metadata to $VERSION"
-          
+
+          git commit -m "Update Skill content and Claude plugin marketplace metadata to ${{ steps.version.outputs.tag_safe }}"
+
           git push
 
       - name: Create release
@@ -78,7 +84,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.RELEASE_TOKEN || github.token }}
-          tag_name: ${{ steps.package.outputs.swift_version }}.${{ steps.date.outputs.date }}
+          tag_name: ${{ steps.version.outputs.tag_safe }}
           name: Swift ${{ steps.package.outputs.swift_version }} (${{ steps.date.outputs.human_date }})
           body: |
              Skill with the complete content of [The Swift Programming Language (${{ steps.package.outputs.swift_version }})](https://github.com/swiftlang/swift-book) as accessed on ${{ steps.date.outputs.human_date }}.
